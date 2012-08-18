@@ -47,6 +47,10 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
+    'social_auth.context_processors.social_auth_by_name_backends',
+    'social_auth.context_processors.social_auth_backends',
+    'social_auth.context_processors.social_auth_by_type_backends',
+    'social_auth.context_processors.social_auth_login_redirect',
 ]
 
 ROOT_URLCONF = 'urls'
@@ -66,7 +70,23 @@ INSTALLED_APPS = [
     'gunicorn',
     'south',
     'raven.contrib.django',
+    'social_auth',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'social_auth.backends.contrib.github.GithubBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+LOGIN_URL          = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL    = '/login/failed/'
+
+
+assert 'GITHUB_APP_ID' in os.environ, "Set GITHUB_APP_ID in your .env file!"
+assert 'GITHUB_APP_SECRET' in os.environ, "Set GITHUB_APP_SECRET in your .env file!"
+GITHUB_APP_ID = os.environ['GITHUB_APP_ID']
+GITHUB_API_SECRET = os.environ['GITHUB_APP_SECRET']
 
 from memcacheify import memcacheify
 
