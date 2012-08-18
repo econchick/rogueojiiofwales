@@ -10,9 +10,11 @@
     {% block head_js %}{% endblock %}
   </head>
   <body>
+    {% block container %}
     <div class="container-fluid">
       {% block body %}{% endblock %}
     </div>
+    {% endblock %}
     {% block body_js %}{% endblock %}
   </body>
 </html>
