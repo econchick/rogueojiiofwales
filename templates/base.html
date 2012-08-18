@@ -4,12 +4,15 @@
   <head>
     <title>{{ title }}</title>
     <!-- css -->
-    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" />
+    {% block head_css %}{% endblock %}
     <!-- js -->
     {% block head_js %}{% endblock %}
   </head>
   <body>
-
+    <div class="container-fluid">
+      {% block body %}{% endblock %}
+    </div>
     {% block body_js %}{% endblock %}
   </body>
 </html>
