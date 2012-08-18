@@ -9,6 +9,7 @@ How-To
 
 * Clone the repo.
 * Add a git remote called ``heroku`` pointing at ``git@heroku.com:insertcreativenamehere.git``.
+* Create a file called .env and add two values: ``DATABASE_URL=sqlite://localhost/local.db`` and ``DEBUG=True``.
 * Run ``make run``.
 * Open http://localhost:8000
 * Hack.
@@ -27,4 +28,4 @@ Run remote commands
 Deploy
 ------
 
-``git push heroku master``
+``make deploy``

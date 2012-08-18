@@ -8,3 +8,6 @@ update:
 
 run: update
 	$(MANAGEPY) runserver 0.0.0.0:8000
+
+deploy:
+	git push heroku master
