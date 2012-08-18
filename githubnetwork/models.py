@@ -85,8 +85,9 @@ class GHUser(BaseAPIModel):
                         user = GHUser.objects.create(**self._translate(shortuser))
                 users.append(user)
                 cache[user.gh_login] = user
+            return users
         self.followers = inner(api.get_iter('users/%s/followers' % self.gh_login))
-        self.following = inner(api.get_iter('users/%s/followers' % self.gh_login))
+        self.following = inner(api.get_iter('users/%s/following' % self.gh_login))
         return self
 
 
