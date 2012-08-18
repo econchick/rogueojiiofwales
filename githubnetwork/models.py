@@ -59,6 +59,7 @@ class GHUser(BaseAPIModel):
 
     def _translate(self, data):
         data['acct_type'] = data.pop('type', '')
+        data['bio'] = data.pop('bio') if data.get('bio') is not None else ''
         data['followers_count'] = data.pop('followers', '0')
         data['following_count'] = data.pop('following', '0')
         data['gh_login'] = data.pop('login')
