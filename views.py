@@ -12,7 +12,7 @@ def index(request):
     # Set a test cookie. When the user clicks the 'Login' button, test and make
     # sure this cookie was set properly.
     request.session.set_test_cookie()
-    return render_to_response('login.html')
+    return render_to_response('login.html', RequestContext(request))
 
 
 def login(request):
