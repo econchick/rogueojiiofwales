@@ -75,6 +75,8 @@ INSTALLED_APPS = [
     'south',
     'raven.contrib.django',
     'social_auth',
+    # custom
+    'githubnetwork',
 ]
 
 AUTHENTICATION_BACKENDS = [
