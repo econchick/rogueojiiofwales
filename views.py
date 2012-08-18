@@ -4,19 +4,12 @@ from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
 
-class GraphRequestContext(RequestContext):
-    @property
-    def user_repos(self):
-        username = self.request.user.username
-        return self.request.github.get_iter('/users/%s/repos/' % username)
-
-
 def index(request):
     '''Index page. Everyone starts here. If the user is logged in (that is, they
     have a session id) return the follower_graph view. Otherwise, render the
     index page.'''
     if request.user.is_authenticated():
-        return redirect('followers')
+        return redirect('graph_followers')
     # Set a test cookie. When the user clicks the 'Login' button, test and make
     # sure this cookie was set properly.
     request.session.set_test_cookie()
@@ -42,12 +35,15 @@ def login(request):
 
 @login_required
 def graph_followers(request):
-    return render_to_response('graph_followers.html', GraphRequestContext(request))
+    return render_to_response('graph_followers.html', {
+        'repos': request.github.get_iter('users/%s/repos' % request.user.username)
+    }, RequestContext(request))
 
 
 @login_required
-def graph_repo(request, user, repo):
+def graph_repo(request, user=None, repo=None):
     return render_to_response('graph_repo.html', {
-        'username': user,
-        'repo': repo,
-    }, GraphRequestContext(request))
+        'graph_user': user,
+        'graph_repo': repo,
+        'repos': request.github.get_iter('users/%s/repos' % request.user.username)
+    }, RequestContext(request))
