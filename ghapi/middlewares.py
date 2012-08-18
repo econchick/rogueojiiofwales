@@ -17,4 +17,5 @@ def get_github(request):
 
 class GithubAPIMiddleware(object):
     def process_request(self, request):
-        request.user = SimpleLazyObject(lambda  : get_github(request))
+        request.github = SimpleLazyObject(lambda  : get_github(request))
+
