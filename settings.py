@@ -82,7 +82,6 @@ INSTALLED_APPS = [
 
 AUTHENTICATION_BACKENDS = [
     'social_auth.backends.contrib.github.GithubBackend',
-    'django.contrib.auth.backends.ModelBackend',
 ]
 
 LOGIN_URL          = '/login/'
