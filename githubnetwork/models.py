@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
 
 class GHUser(models.Model):
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True, verbose_name='ghuser')
     following = models.ManyToMany(self, related_name='followers')
     created_at = models.DateTimeField('date account created')
     acct_type = models.CharField(max_length=255)
@@ -28,7 +29,7 @@ class GHUser(models.Model):
 	    return self.login
 
 class Repo(models.Model):
-    owner = models.ForeignKey(GHUser, unique=True)
+    owner = models.ForeignKey(GHUser, unique=True, verbose_name='ghuser')
     forks = models.IntegerField()
     language = models.CharField(max_length=255)
     created_at = models.DateTimeField('date repo created')
