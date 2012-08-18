@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
@@ -7,7 +8,7 @@ def index(request):
     '''Index page. Everyone starts here. If the user is logged in (that is, they
     have a session id) return the follower_graph view. Otherwise, render the
     index page.'''
-    if request.session.get('sessionid', False):
+    if request.user.is_authenticated():
         return follower_graph(request)
     # Set a test cookie. When the user clicks the 'Login' button, test and make
     # sure this cookie was set properly.
@@ -30,4 +31,4 @@ def login(request):
 
 @login_required
 def follower_graph(request):
-    return 'Hello!'
+    return render_to_response('index.html', RequestContext(request))
