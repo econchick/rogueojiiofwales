@@ -91,9 +91,16 @@ assert 'GITHUB_APP_SECRET' in os.environ, "Set GITHUB_APP_SECRET in your .env fi
 GITHUB_APP_ID = os.environ['GITHUB_APP_ID']
 GITHUB_API_SECRET = os.environ['GITHUB_APP_SECRET']
 
-from memcacheify import memcacheify
-
-CACHES = memcacheify()
+try:
+    from memcacheify import memcacheify
+    CACHES = memcacheify()
+except ImportError:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'not-so-unique-snowflake',
+        }
+    }
 
 import dj_database_url
 
