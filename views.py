@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
 
-class GitHubRequestContext(RequestContext):
+class GraphRequestContext(RequestContext):
     @property
     def user_repos(self):
         username = self.request.user.username
@@ -42,7 +42,7 @@ def login(request):
 
 @login_required
 def graph_followers(request):
-    return render_to_response('graph_followers.html', GitHubRequestContext(request))
+    return render_to_response('graph_followers.html', GraphRequestContext(request))
 
 
 @login_required
@@ -50,4 +50,4 @@ def graph_repo(request, user, repo):
     return render_to_response('graph_repo.html', {
         'username': user,
         'repo': repo,
-    }, RequestContext(request))
+    }, GraphRequestContext(request))
