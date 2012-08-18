@@ -1,0 +1,21 @@
+{# vim: set ft=djangohtml #}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ title }}</title>
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" />
+    {% block head_css %}{% endblock %}
+    <!-- js -->
+    {% block head_js %}{% endblock %}
+  </head>
+  <body>
+    {% block container %}
+    <div class="container-fluid">
+      {% block body %}{% endblock %}
+    </div>
+    {% endblock %}
+    {% block body_js %}{% endblock %}
+  </body>
+</html>
+
