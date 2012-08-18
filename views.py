@@ -36,3 +36,8 @@ def login(request):
 @login_required
 def graph_followers(request):
     return render_to_response('graph_followers.html', RequestContext(request))
+
+
+@login_required
+def graph_repo(request, user, repo):
+    return render_to_response('graph_followers.html', RequestContext(request))
