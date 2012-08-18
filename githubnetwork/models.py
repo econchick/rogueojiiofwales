@@ -26,3 +26,32 @@ class GHUser(models.Model):
 
     def __unicode__(self):
 	    return self.login
+
+class Repo(models.Model):
+    owner = models.ForeignKey(GHUser, unique=True)
+    forks = models.IntegerField()
+    language = models.CharField(max_length=255)
+    created_at = models.DateTimeField('date repo created')
+    open_issues = models.IntegerField()
+    description = models.CharField(max_length=255)
+    ssh_url = models.URLfield(max_length=255)
+    has_downloads = models.BooleanField()
+    svn_url = models.URLfield(max_length=255)
+    has_wiki = models.BooleanField
+    html_url = models.URLfield(max_length=255)
+    watchers = models.IntegerField()
+    size = models.IntegerField()
+    full_name = models.CharField(max_length=255)
+    clone_url = models.URLfield(max_length=255)
+    git_url = models.URLfield(max_length=255)
+    name = models.CharField(max_length=255)
+    url = models.URLfield(max_length=255)
+    mirror_url = models.URLfield(max_length=255)
+    has_issues = models.BooleanField()
+    homepage = models.CharField(max_length=255)
+    private = models.BooleanField()
+    gh_repo_id = models.IntegerField()
+    pushed_at = models.DateTimeField('date repo pushed')
+
+    def __unicode__(self):
+    	return self.name
