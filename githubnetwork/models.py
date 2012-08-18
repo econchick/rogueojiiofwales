@@ -93,7 +93,7 @@ class GHUser(BaseAPIModel):
 
 
 class Repo(BaseAPIModel):
-    owner = models.ForeignKey(GHUser, unique=True)
+    owner = models.ForeignKey(GHUser, unique=True, verbose_name='ghuser')
     forks = models.IntegerField()
     language = models.CharField(max_length=255)
     created_at = models.DateTimeField('date repo created')
