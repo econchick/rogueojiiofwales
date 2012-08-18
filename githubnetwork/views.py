@@ -12,6 +12,7 @@ from django.views.generic.edit import CreateView, ModelFormMixin, FormView
 from django.views.generic.list import ListView
 
 from django.contrib.auth.models import User
+from ghapi import api
 from models import GHUser, Repo
 
 
@@ -35,47 +36,51 @@ class Graph(object):
 
 
 class NetworkView(DetailView):
-	#example list of edges
-	# nodes just in a list
-[
-    {'from': 'node1',
-     'to'  : 'node2',
-     'distance' : 'weight'},
-]
-
-    def create_graph(self, nodes, edges):
-    	graph = Graph()
-    	graph.nodes = set(nodes)
-    	for edge in edges:
-    		graph.add_edge(edge['from'], edge['to'], edge['distance'])
-    	return graph
-
-
     def get_user(self):
-        self.user = User.objects.get(username=self.kwargs.get('username'))
-        self.person = self.user.get_profile()
-        return
+        self.user = GHUser.objects.get(username=self.kwargs.get('username'))
+        return self.user
 
-    def get_repos(self):
-    	self.repos = Repo.objects.get(user=self.get_user())
-    	return repos
+    def get_user_network(self):
+    	user = self.get_user()
+    	graph = []
+
+    def get_repo_network(self):
+    	user = self.get_user()
+    	graph = []
+    	for repo in api.get_iter('user/%s/repos' % user):
+    		# TODO: (Lynn) this is messy - clean up
+    		links = {}
+    		repo_info = api.get('repos/%s/%s' % (user, repo))
+    		parent = repo_info['parent']['owner']['login']
+    		child = repo_info['owner']['login']
+    		watchers = repo_info['parent']['watchers']
+    		network = repo_info['network_count']
+    		date_updated_parent = repo_info['parent']['updated_at']
+    		date_updated_child = repo_info['updated_at']
+    		links['source'] = parent
+    		links['target'] = child
+    		links['weight'] = {'watchers': watchers, 'network' : network, 
+    		                    'date_updated_parent' : date_updated_parent, 
+    		                    'date_updated_child' : date_updated_child }
+    		graph.append(links)
+    	return graph
 
     def get_queryset(self):
     	self.get_user()
-    	if self.get_repos:
-
-
+    	if repos:
+    		# do repo-y things
+    		self.get_repo_network()
+    	else:
+    		# do user-y things
+    		self.get_user_network()
 
     def get_context_data(self, **kwargs):
-        queryset = kwargs.pop('object_list')
-        page_size = self.get_paginate_by(queryset)
+        # TODO: (Lynn) figure out what's needed for context data
         context_object_name = self.get_context_object_name(queryset)
-
 
     def get(self):
     	self.object_list = self.get_queryset()
         context = self.get_context_data(object_list=self.object_list)
-        context.update({'xxx': 'what should go here'})
         return self.render_to_response(context)
 
     @method_decorator(login_required)
