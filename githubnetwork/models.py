@@ -73,28 +73,20 @@ class GHUser(BaseAPIModel):
         self.complete = True
         self.save()
         # set followers/following
-        followers = []
         cache = {}
-        for shortuser in api.get_iter('users/%s/followers' % self.gh_login):
-            follower = cache.get(shortuser['login'], None)
-            if not follower:
-                try:
-                    follower = GHUser.objects.get(gh_login=shortuser['login'])
-                except self.DoesNotExist:
-                    follower = GHUser.objects.create(**self._translate(shortuser))
-            followers.append(follower)
-            cache[follower.gh_login] = follower
-        self.followers = followers
-        following = []
-        for shortuser in api.get_iter('users/%s/following' % self.gh_login):
-            follower = cache.get(shortuser['login'], None)
-            if not follower:
-                try:
-                    follower = GHUser.objects.get(gh_login=shortuser['login'])
-                except self.DoesNotExist:
-                    follower = GHUser.objects.create(**self._translate(shortuser))
-            following.append(follower)
-        self.following = following
+        def inner(iter):
+            users = []
+            for shortuser in iter:
+                user = cache.get(shortuser['login'], None)
+                if not user:
+                    try:
+                        user = GHUser.objects.get(gh_login=shortuser['login'])
+                    except self.DoesNotExist:
+                        user = GHUser.objects.create(**self._translate(shortuser))
+                users.append(user)
+                cache[user.gh_login] = user
+        self.followers = inner(api.get_iter('users/%s/followers' % self.gh_login))
+        self.following = inner(api.get_iter('users/%s/followers' % self.gh_login))
         return self
 
 
