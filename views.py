@@ -7,20 +7,24 @@ def index(request):
     have a session id) return the follower_graph view. Otherwise, render the
     index page.'''
     if request.method == 'POST':
-        request.session.set_test_cookie()
         return redirect('login')
     if 'sessionid' in request.session:
         return follower_graph(request)
+    # Set a test cookie. When the user clicks the 'Login' button, test and make
+    # sure this cookie was set properly.
+    request.session.set_test_cookie()
     return render_to_response('login.html')
 
 
 def login(request):
     '''Do a quick check to make sure cookies are enabled. If so, redirect to
     GitHub so the user can login.'''
+    # Make sure the user can accept cookies.
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
         return redirect('/login/github/')
     else:
+        # TODO: Render an error -- fix your damn cookies!
         return render_to_response('login.html')
 
 
