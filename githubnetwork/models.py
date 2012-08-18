@@ -12,7 +12,7 @@ class BaseAPIModel(models.Model):
 
     def needs_refresh(self):
         now = datetime.datetime.now()
-        return now - self.last_sync > datetime.timedelta(days=7)
+        return not self.complete or now - self.last_sync > datetime.timedelta(days=7)
 
     def refresh(self, api):
         """
