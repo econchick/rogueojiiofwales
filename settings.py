@@ -43,6 +43,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'ghapi.middleware.GithubAPIMiddleware',
+    'githubnetwork.middleware.GithubUserMiddleware',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -85,7 +86,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_URL          = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/me/'
 LOGIN_ERROR_URL    = '/login/failed/'
 
 

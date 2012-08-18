@@ -43,6 +43,8 @@ class GitHub(object):
         Returns an iterator over a resource, eg 'repos/divio/django-cms/watchers' that automatically handles
         pagination.
         """
+        if params is None:
+            params = {}
         data, response = self._get(path, params)
         for thing in data:
             yield thing
