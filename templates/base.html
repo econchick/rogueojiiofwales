@@ -1,0 +1,16 @@
+<!doctype html>
+<!-- vim: set ft=djangohtml -->
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <!-- css -->
+    {% block extra_css %}{% endblock %}
+    <!-- js -->
+    {% block head_js %}{% endblock %}
+  </head>
+  <body>
+
+    {% block body_js %}{% endblock %}
+  </body>
+</html>
+
