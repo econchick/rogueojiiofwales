@@ -17,3 +17,8 @@ h1.placeholder {
   {% block graph %}<h1 class="placeholder">PUT A GRAPH HERE</h1>{% endblock %}
 </div>
 {% endblock container %}
+
+{% block body_js %}
+<script src="{{ STATIC_URL }}js/jquery.js"></script>
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
+{% endblock %}
