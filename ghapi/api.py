@@ -25,8 +25,11 @@ class GitHub(object):
         """
         Gets a resource, eg 'users/ojii'.
 
-        Returns tuple (jsondata, response)
+        Returns parsed json data as a python dictionary
         """
+        return self._get(path, params)[0]
+
+    def _get(self, path, params=None):
         if params is None:
             params = {}
         params['per_page'] = 100
@@ -34,12 +37,13 @@ class GitHub(object):
         response.raise_for_status()
         return response.json, response
 
+
     def get_iter(self, path, params=None):
         """
         Returns an iterator over a resource, eg 'repos/divio/django-cms/watchers' that automatically handles
         pagination.
         """
-        data, response = self.get(path, params)
+        data, response = self._get(path, params)
         for thing in data:
             yield thing
         next_page = get_next_page(response)
