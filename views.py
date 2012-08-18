@@ -9,7 +9,7 @@ def index(request):
     have a session id) return the follower_graph view. Otherwise, render the
     index page.'''
     if request.user.is_authenticated():
-        return follower_graph(request)
+        return redirect('followers')
     # Set a test cookie. When the user clicks the 'Login' button, test and make
     # sure this cookie was set properly.
     request.session.set_test_cookie()
@@ -30,5 +30,5 @@ def login(request):
 
 
 @login_required
-def follower_graph(request):
-    return render_to_response('graph.html', RequestContext(request))
+def graph_followers(request):
+    return render_to_response('graph_followers.html', RequestContext(request))
