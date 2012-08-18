@@ -4,6 +4,13 @@ from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
 
+class GitHubRequestContext(RequestContext):
+    @property
+    def user_repos(self):
+        username = self.request.user.username
+        return self.request.github.get_iter('/users/%s/repos/' % username)
+
+
 def index(request):
     '''Index page. Everyone starts here. If the user is logged in (that is, they
     have a session id) return the follower_graph view. Otherwise, render the
@@ -35,9 +42,12 @@ def login(request):
 
 @login_required
 def graph_followers(request):
-    return render_to_response('graph_followers.html', RequestContext(request))
+    return render_to_response('graph_followers.html', GitHubRequestContext(request))
 
 
 @login_required
 def graph_repo(request, user, repo):
-    return render_to_response('graph_followers.html', RequestContext(request))
+    return render_to_response('graph_repo.html', {
+        'username': user,
+        'repo': repo,
+    }, RequestContext(request))
