@@ -7,8 +7,8 @@
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Repos</a>
             <ul class="dropdown-menu">
-              {% for repo in request.user_repos %}
-                <li>{{ repo }}</li>
+              {% for r in repos %}
+              <li><a href="#">{{ r.name }}</a></li>
               {% endfor %}
             </ul>
           </li>
