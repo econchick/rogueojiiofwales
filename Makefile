@@ -2,7 +2,7 @@ MANAGEPY=foreman run env/bin/python manage.py
 
 update:
 	virtualenv env
-	env/bin/pip install -r requirements.txt
+	env/bin/pip install -r localrequirements.txt
 	$(MANAGEPY) syncdb
 	$(MANAGEPY) migrate
 
