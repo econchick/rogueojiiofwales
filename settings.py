@@ -13,6 +13,9 @@ LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
+assert 'SECRET_KEY' in os.environ, 'Set SECRET_KEY in your .env file!'
+SECRET_KEY = os.environ['SECRET_KEY']
+
 USE_L10N = USE_I18N = False
 
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
