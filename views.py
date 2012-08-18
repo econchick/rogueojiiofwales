@@ -35,4 +35,4 @@ def login(request):
 
 @login_required
 def follower_graph(request):
-    return render_to_response('index.html', RequestContext(request))
+    return render_to_response('graph.html', RequestContext(request))
