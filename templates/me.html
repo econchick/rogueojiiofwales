@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "graph_base.html" %}
 
-{% block body %}
+{% block graph %}
     <div id='chart'> </div>
     <style>
         circle.node {
@@ -12,11 +12,6 @@
             stroke: #999;
             stroke-opacity: .6;
         }
-        .nodetext {
-            pointer-events: none;
-            font: 10px sans-serif;
-        }
-
     </style>
     <script src="{{ STATIC_URL }}d3/d3.v2.js"></script>
     <script src="{{ STATIC_URL }}/js/jquery.js"></script>
@@ -27,13 +22,13 @@
         var map = {};
 
         var w = 960,
-            h = 500;
+            h = 800;
         var color = d3.scale.category20();
 
         var force = d3.layout.force()
                 .gravity(.05)
-                .distance(100)
-                .charge(-100)
+                .distance(250)
+                .charge(-200)
                 .size([w, h]);
 
         var nodes = force.nodes(),
@@ -67,18 +62,15 @@
                     .data(nodes, function(d) { return d.id;});
 
             var nodeEnter = node.enter().append("svg:g").attr('class', 'node').call(force.drag);
-                nodeEnter.append("circle")
-                    .attr("class", "node")
-                    .attr("r", 5)
-                    .style("fill", function(d) { return color(d.group); })
-                    .attr("x", "-8px")
-                    .attr("y", "-8px")
-                    .attr("width", "16px")
-                    .attr("height", "16px");
-                nodeEnter.append("svg:text")
-                    .attr("class", "nodetext")
-                    .attr("dx", 12)
-                    .attr("dy", ".35em")
+                nodeEnter.append("svg:image")
+                    .attr("class", "circle")
+                    .attr("xlink:href", function(d){return d.avatar;})
+                    .attr("x", "-16px")
+                    .attr("y", "-16px")
+                    .style("border-radius", "16px;")
+                    .attr("width", "32px")
+                    .attr("height", "32px");
+                nodeEnter.append("title")
                     .text(function(d) { return d.name });
 
             node.exit().remove();
@@ -88,7 +80,7 @@
 
         // Add three nodes and three links.
         function init() {
-            var center = {"name": "{{ request.gh_user.gh_login }}", "group": 1};
+            var center = {"name": "{{ request.gh_user.gh_login }}", "avatar": "{{ request.gh_user.avatar_url }}"};
             nodes.push(center);
             for (var i = 0; i<followers.length;i++){
                 nodes.push(followers[i]);

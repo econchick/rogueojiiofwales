@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+from django.utils import simplejson
 from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
 from ghapi import api
@@ -85,8 +86,8 @@ class NetworkView(DetailView):
 def me(request):
     context = RequestContext(request)
     context['followers'] = simplejson.dumps(
-        [{'name': unicode(follower), 'group': 2} for follower in request.gh_user.following.all()])
-    return render_to_response('graph.html', context)
+        [{'name': unicode(follower), 'avatar': follower.avatar_url} for follower in request.gh_user.following.all()])
+    return render_to_response('me.html', context)
 
 
 @login_required
