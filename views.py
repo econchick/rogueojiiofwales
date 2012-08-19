@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
@@ -7,12 +8,12 @@ def index(request):
     '''Index page. Everyone starts here. If the user is logged in (that is, they
     have a session id) return the follower_graph view. Otherwise, render the
     index page.'''
-    if request.session.get('sessionid', False):
-        return follower_graph(request)
+    if request.user.is_authenticated():
+        return redirect('graph_followers')
     # Set a test cookie. When the user clicks the 'Login' button, test and make
     # sure this cookie was set properly.
     request.session.set_test_cookie()
-    return render_to_response('login.html', RequestContext(request))
+    return render_to_response('index.html', RequestContext(request))
 
 
 def login(request):
@@ -28,10 +29,21 @@ def login(request):
         # actually works.
         request.session.set_test_cookie()
         # Render an error -- fix your damn cookies!
-        return render_to_response('login.html',
+        return render_to_response('index.html',
                                   { 'error': "Fix your damn cookies!" })
 
 
 @login_required
-def follower_graph(request):
-    return 'Hello!'
+def graph_followers(request):
+    return render_to_response('graph_followers.html', {
+        'repos': request.github.get_iter('users/%s/repos' % request.user.username)
+    }, RequestContext(request))
+
+
+@login_required
+def graph_repo(request, user=None, repo=None):
+    return render_to_response('graph_repo.html', {
+        'graph_user': user,
+        'graph_repo': repo,
+        'repos': request.github.get_iter('users/%s/repos' % request.user.username)
+    }, RequestContext(request))
