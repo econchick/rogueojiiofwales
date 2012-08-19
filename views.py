@@ -23,6 +23,10 @@ def login(request):
         request.session.delete_test_cookie()
         return redirect('/login/github/')
     else:
+        # During development, I've landed here a lot, despite having cookies
+        # enabled. So, set the test cookie so that trying to login from here
+        # actually works.
+        request.session.set_test_cookie()
         # Render an error -- fix your damn cookies!
         return render_to_response('login.html',
                                   { 'error': "Fix your damn cookies!" })
