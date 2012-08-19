@@ -33,20 +33,6 @@ def login(request):
                                   { 'error': "Fix your damn cookies!" })
 
 
-def _sorted_repos(request):
-    repos = [r for r in request.github.get_iter('users/%s/repos' %
-        request.user.username)]
-    repos.sort(key=lambda x: x['name'])
-    return repos
-
-
-@login_required
-def graph_followers(request):
-    return render_to_response('graph_followers.html', {
-        'repos': _sorted_repos(request)
-    }, RequestContext(request))
-
-
 @login_required
 def graph_repo(request, user=None, repo=None):
     return render_to_response('graph_repo.html', {
