@@ -1,0 +1,24 @@
+{# vim: set ft=htmldjango #}
+{% extends "base.html" %}
+
+{% block head_css %}
+<style text="text/css">
+h1.placeholder {
+  margin-top: 80px;
+  text-align: center;
+  color: #ccc;
+}
+</style>
+{% endblock %}
+
+{% block container %}
+{% include "navbar.html" %}
+<div class="container-fluid">
+  {% block graph %}<h1 class="placeholder">PUT A GRAPH HERE</h1>{% endblock %}
+</div>
+{% endblock container %}
+
+{% block body_js %}
+<script src="{{ STATIC_URL }}js/jquery.js"></script>
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap-dropdown.js"></script>
+{% endblock %}
