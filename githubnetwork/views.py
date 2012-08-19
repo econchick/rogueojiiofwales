@@ -82,11 +82,22 @@ class NetworkView(DetailView):
         return super(ProtectedView, self).dispatch(*args, **kwargs)
 
 
+def _sorted_repos(request):
+    '''Get a list of repos for the currently authorized user, sort it, and
+    return it.'''
+    repos = [r for r in request.github.get_iter('users/%s/repos' %
+        request.user.username)]
+    repos.sort(key=lambda x: x['name'])
+    return repos
+
+
 @login_required
 def me(request):
     context = RequestContext(request)
     context['followers'] = simplejson.dumps(
-        [{'name': unicode(follower), 'avatar': follower.avatar_url} for follower in GHUser.objects.filter(following=request.gh_user)])
+        [{'name': unicode(follower), 'avatar': follower.avatar_url}
+         for follower in GHUser.objects.filter(following=request.gh_user)])
+    context['repos'] = _sorted_repos(request)
     return render_to_response('me.html', context)
 
 
@@ -95,5 +106,6 @@ def get_user_followers(request):
     name = request.GET.get('user', None)
     if not name:
         raise HttpResponseBadRequest()
-    names = simplejson.dumps([user['login'] for user in request.github.get_iter('users/%s/followers' % name)])
+    names = simplejson.dumps([user['login']
+        for user in request.github.get_iter('users/%s/followers' % name)])
     return HttpResponse(names, content_type='application/json')

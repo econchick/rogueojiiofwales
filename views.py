@@ -22,7 +22,7 @@ def login(request):
     # Make sure the user can accept cookies.
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
-        return redirect('/login/github/')
+        return redirect('socialauth_begin', backend='github')
     else:
         # During development, I've landed here a lot, despite having cookies
         # enabled. So, set the test cookie so that trying to login from here
@@ -34,16 +34,9 @@ def login(request):
 
 
 @login_required
-def graph_followers(request):
-    return render_to_response('graph_followers.html', {
-        'repos': request.github.get_iter('users/%s/repos' % request.user.username)
-    }, RequestContext(request))
-
-
-@login_required
 def graph_repo(request, user=None, repo=None):
     return render_to_response('graph_repo.html', {
         'graph_user': user,
         'graph_repo': repo,
-        'repos': request.github.get_iter('users/%s/repos' % request.user.username)
+        'repos': _sorted_repos(request)
     }, RequestContext(request))
