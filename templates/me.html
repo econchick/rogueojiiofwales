@@ -36,6 +36,10 @@
             h = $('#chart').height();
         var color = d3.scale.category20();
 
+        var nodeSize = 64;
+        var borderSize = 3;
+        var nodeCenter = nodeSize / 2;
+
         /* Use a "flexible force-directed graph layout". */
         var force = d3.layout.force()
                 .gravity(.05)
@@ -75,18 +79,35 @@
             var node = vis.selectAll("g.node")
                     .data(nodes, function(d) { return d.id;});
 
-            var nodeEnter = node.enter().append("svg:g").attr('class', 'node').call(force.drag);
-                nodeEnter.append("svg:image")
-                    .attr("class", "circle")
-                    .attr("xlink:href", function(d){return d.avatar;})
-                    .attr("x", "-16px")
-                    .attr("y", "-16px")
-                    .style("border-radius", "16px;")
-                    .attr("width", "64px")
-                    .attr("height", "64px");
-                nodeEnter.append("title")
-                    .text(function(d) { return d.name });
+            var nodeEnter;
+            nodeEnter = node.enter().append("svg:g")
+                .attr('class', 'node')
+                .call(force.drag);
 
+            // Node clip path
+            nodeEnter.append("svg:clipPath")
+                .attr("id", function(d) {return "clip-" + d.name;})
+                .append("svg:circle").attr("r", nodeCenter + "px");
+
+            // Border
+            nodeEnter.append("circle")
+                .attr("r", (nodeCenter + borderSize) + "px")
+                .attr("fill", "#2c2c2c");
+
+            // Node
+            nodeEnter.append("svg:image")
+                .attr("class", "circle")
+                .attr("clip-path", function(d) {return "url(#clip-" + d.name + ")";})
+                .attr("clip-rule", "nonzero")
+                .attr("xlink:href", function(d) {return d.avatar;})
+                .attr("x", -nodeCenter + "px")
+                .attr("y", -nodeCenter + "px")
+                .attr("width", nodeSize + "px")
+                .attr("height", nodeSize + "px");
+
+            // Node title/tooltip
+            nodeEnter.append("title")
+                .text(function(d) { return d.name });
             node.exit().remove();
 
             force.start();
