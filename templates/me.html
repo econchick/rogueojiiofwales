@@ -39,8 +39,8 @@
         /* Use a "flexible force-directed graph layout". */
         var force = d3.layout.force()
                 .gravity(.05)
-                .distance(200)
-                .charge(-250)
+                .distance(250)
+                .charge(-1000)
                 .size([w, h]);
 
         var nodes = force.nodes(),
@@ -52,7 +52,9 @@
 
         force.on("tick", function() {
             vis.selectAll("g.node")
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                    .attr("transform", function(d) {
+                      return "translate(" + d.x + "," + d.y + ")";
+                    });
 
             vis.selectAll("line.link")
                     .attr("x1", function(d) { return d.source.x; })
@@ -80,8 +82,8 @@
                     .attr("x", "-16px")
                     .attr("y", "-16px")
                     .style("border-radius", "16px;")
-                    .attr("width", "32px")
-                    .attr("height", "32px");
+                    .attr("width", "64px")
+                    .attr("height", "64px");
                 nodeEnter.append("title")
                     .text(function(d) { return d.name });
 
