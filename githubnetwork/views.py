@@ -86,7 +86,7 @@ class NetworkView(DetailView):
 def me(request):
     context = RequestContext(request)
     context['followers'] = simplejson.dumps(
-        [{'name': unicode(follower), 'avatar': follower.avatar_url} for follower in request.gh_user.following.all()])
+        [{'name': unicode(follower), 'avatar': follower.avatar_url} for follower in GHUser.objects.filter(following=request.gh_user)])
     return render_to_response('me.html', context)
 
 
