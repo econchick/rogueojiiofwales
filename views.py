@@ -22,7 +22,7 @@ def login(request):
     # Make sure the user can accept cookies.
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
-        return redirect('/login/github/')
+        return redirect('socialauth_begin', backend='github')
     else:
         # During development, I've landed here a lot, despite having cookies
         # enabled. So, set the test cookie so that trying to login from here
