@@ -1,6 +1,7 @@
 {% extends "graph_base.html" %}
 
 {% block graph %}
+    <h1>People following you</h1>
     <div id='chart'> </div>
     <style>
         circle.node {
@@ -22,19 +23,19 @@
         var map = {};
 
         var w = 960,
-            h = 800;
+            h = 960;
         var color = d3.scale.category20();
 
         var force = d3.layout.force()
                 .gravity(.05)
                 .distance(250)
-                .charge(-200)
+                .charge(-500)
                 .size([w, h]);
 
         var nodes = force.nodes(),
                 links = force.links();
 
-        var vis = d3.select("body").append("svg:svg")
+        var vis = d3.select("#chart").append("svg:svg")
                 .attr("width", w)
                 .attr("height", h);
 
