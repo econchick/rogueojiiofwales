@@ -11,8 +11,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')), 'django.contrib.staticfiles.views.serve', {'insecure': True}),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^followers/', views.graph_followers,
-        name='graph_followers'),
     url(r'^login/$', views.login, name='login'),
     url(r'^me/$', 'githubnetwork.views.me', name='me'),
     url(r'^~followers/$', 'githubnetwork.views.get_user_followers', name='get_user_followers'),
