@@ -1,0 +1,118 @@
+{% extends "graph_base.html" %}
+
+{% block graph %}
+    <h1>People following you</h1>
+    <div id='chart'> </div>
+    <style>
+        circle.node {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+
+        line.link {
+            stroke: #999;
+            stroke-opacity: .6;
+        }
+    </style>
+    <script src="{{ STATIC_URL }}d3/d3.v2.js"></script>
+    <script src="{{ STATIC_URL }}/js/jquery.js"></script>
+    <script>
+    $(document).ready(function(){
+
+        var followers = {{ followers|safe }};
+        var map = {};
+
+        var w = 960,
+            h = 960;
+        var color = d3.scale.category20();
+
+        var force = d3.layout.force()
+                .gravity(.05)
+                .distance(250)
+                .charge(-500)
+                .size([w, h]);
+
+        var nodes = force.nodes(),
+                links = force.links();
+
+        var vis = d3.select("#chart").append("svg:svg")
+                .attr("width", w)
+                .attr("height", h);
+
+        force.on("tick", function() {
+            vis.selectAll("g.node")
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+            vis.selectAll("line.link")
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+        });
+
+        function restart() {
+            var link = vis.selectAll("line.link")
+                    .data(links, function(d) { return d.source.id + "-" + d.target.id; });
+
+            link.enter().insert("svg:line", "g.node")
+                    .attr("class", "link");
+
+            link.exit().remove();
+
+            var node = vis.selectAll("g.node")
+                    .data(nodes, function(d) { return d.id;});
+
+            var nodeEnter = node.enter().append("svg:g").attr('class', 'node').call(force.drag);
+                nodeEnter.append("svg:image")
+                    .attr("class", "circle")
+                    .attr("xlink:href", function(d){return d.avatar;})
+                    .attr("x", "-16px")
+                    .attr("y", "-16px")
+                    .style("border-radius", "16px;")
+                    .attr("width", "32px")
+                    .attr("height", "32px");
+                nodeEnter.append("title")
+                    .text(function(d) { return d.name });
+
+            node.exit().remove();
+
+            force.start();
+        }
+
+        // Add three nodes and three links.
+        function init() {
+            var center = {"name": "{{ request.gh_user.gh_login }}", "avatar": "{{ request.gh_user.avatar_url }}"};
+            nodes.push(center);
+            for (var i = 0; i<followers.length;i++){
+                nodes.push(followers[i]);
+                links.push({source:center, target:followers[i]});
+                map[followers[i].name] = followers[i];
+            }
+            restart();
+        }
+
+        function addLink(link) {
+            links.push(link);
+            restart();
+        }
+
+        restart();
+        init();
+        function loadFollowerFollowers(follower){
+            $.getJSON('{%  url get_user_followers %}?user=' + follower.name, function(data){
+                for (var i = 0; i<data.length; i++){
+                    var target = map[data[i]];
+                    if (target){
+                        addLink({source:follower, target:target})
+                    }
+                }
+            });
+            // addLink({source: followers[15], target: followers[5]});
+        }
+        for (var i = 0; i<followers.length; i++){
+            loadFollowerFollowers(followers[i]);
+        }
+    });
+    </script>
+{% endblock %}
+
